@@ -1,0 +1,28 @@
+(require :uiop)
+
+(let ((filename (first (uiop:command-line-arguments)))
+      (file-contents (list))
+      (commands (list))
+      (dial 50)
+      (code 0))
+  ;; Read Block
+  (with-open-file (stream filename)
+    (do ((l (read-line stream) (read-line stream nil)))
+        ((eq l nil) (setq file-contents (reverse file-contents)))
+      (push l file-contents)))
+  ;; Command Creation Block
+  (dolist (line file-contents (setq commands (reverse commands)))
+    (push (cons (subseq line 0 1) (parse-integer (subseq line 1))) commands))
+  (dolist (turn commands)
+    (let ((direction (car turn))
+          (amount (cdr turn)))
+      (incf code (floor amount 100))
+      (setq amount (rem amount 100))
+      (cond ((string= direction "L") (cond ((< amount dial) (decf dial amount))
+                                           ((= dial 0) (incf dial (+ (mod (* -1 amount) 100))))
+                                           (t (incf dial (+ (if (> amount dial) 100 0) (mod (* -1 amount) 100))))))
+            ((string= direction "R") (incf dial amount)))
+      (incf code (floor dial 100))
+      (setq dial (mod dial 100))))
+  (pprint (concatenate 'string "The code is: " (write-to-string code))))
+

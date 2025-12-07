@@ -1,4 +1,5 @@
 (require :uiop)
+
 (let ((filename (first (uiop:command-line-arguments)))
       (file-contents (list))
       (commands (list))

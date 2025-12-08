@@ -15,13 +15,13 @@
           (t (cons line collector)))))
 
 (defun create-list-by-range (start end &optional collector)
-  ;; Creates a range from beginning to end, inclusive
+  ;;; Creates a range from beginning to end, inclusive
   (cond ((> end start) (create-list-by-range start (1- end) (cons end collector)))
         (t (cons end collector))))
 
 (defun validate-id (id)
-  ;; Tests an id string to see if it is valid (isn't the same number twice)
-  (cond ((oddp (length id)) t) ;; Odd length numbers aren't ever invalid
+  ;;; Tests an id string to see if it is valid (isn't the same number twice)
+  (cond ((oddp (length id)) t) ; Odd length numbers aren't ever invalid
         (t (let ((midpoint (/ (length id) 2)))
              (if (string= (subseq id 0 midpoint) (subseq id midpoint)) nil t)))))
 

@@ -1,3 +1,4 @@
+#!/usr/bin/sbcl --script
 (require :uiop)
 
 (let ((filename (first (uiop:command-line-arguments)))

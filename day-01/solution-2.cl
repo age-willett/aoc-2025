@@ -1,3 +1,4 @@
+#!/usr/bin/sbcl --script
 (require :uiop)
 
 (let ((filename (first (uiop:command-line-arguments)))
@@ -25,4 +26,3 @@
       (incf code (floor dial 100))
       (setq dial (mod dial 100))))
   (pprint (concatenate 'string "The code is: " (write-to-string code))))
-

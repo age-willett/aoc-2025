@@ -7,28 +7,35 @@
     (cond (pos (split-line-by-character sep (subseq line 0 pos) (cons (subseq line (1+ pos)) collector)))
           (t (cons line collector)))))
 
+;; Need to sharpen up my naming conventions
+(defun insert-into-range-list (range-list range-pair)
+  ;;; Insert a range pair into a list attempting to keep order based on the range minimum
+  (let ((compare range-list))
+    (loop
+      (cond ((not compare) (return (cons range-pair nil))) ; Init empty list
+            ((<= (car range-pair) (caar compare)) ; Behind the highest low number
+             (rplacd compare (cons (car compare) (cdr compare)))
+             (rplaca compare range-pair)
+             (return range-list))
+            ((not (cdr compare)) (rplacd compare (cons range-pair nil)) (return range-list)) ; Made it to list end
+            (t (setq compare (cdr compare))))))) ; Advance compare after exhausting all cases
+
 (defun build-fresh-ranges (lines &optional fresh-range)
   (cond ((string= (car lines) "") fresh-range)
-        (t (let ((range-ends (split-line-by-character #\- (car lines))))
-             (build-fresh-ranges (cdr lines)
-                                 (cons `(,(parse-integer (car range-ends)) .
-                                         ,(parse-integer (cadr range-ends)))
-                                       fresh-range))))))
-
-(defun init-range-iter (start end)
-  (let ((i (1- start)))
-    (lambda () (if (< i end) (incf i)))))
+        (t (let* ((range-ends (split-line-by-character #\- (car lines)))
+                  (range-pair `(,(parse-integer (car range-ends)) . ,(parse-integer (cadr range-ends)))))
+             (build-fresh-ranges (cdr lines) (insert-into-range-list fresh-range range-pair))))))
 
 (let* ((file-contents (uiop:read-file-lines (car (uiop:command-line-arguments))))
        (fresh-ranges (build-fresh-ranges file-contents))
-       (fresh-collection (make-hash-table)))
-  ;; dolist smashed the heap, trying a mutable loop variant.
+       (compare fresh-ranges))
+  ;; Compress overlapping ranges
   (loop
-    (when (not fresh-ranges) (return))
-    (let* ((range (pop fresh-ranges))
-           (range-iter (init-range-iter (car range) (cdr range))))
-      (loop
-        (let ((i (funcall range-iter)))
-          (if (not i) (return) (setf (gethash i fresh-collection) t))))))
-  ;; I should eventually bother to learn format.
-  (format t "There are ~a different fresh ingredient IDs." (hash-table-count fresh-collection)))
+    (unless (cdr compare) (return))
+    (if (< (cdar compare) (caadr compare)) (setq compare (cdr compare))
+        (progn
+          (rplaca compare (cons (caar compare) (max (cdar compare) (cdadr compare))))
+          (rplacd compare (cddr compare)))))
+  (format t "There are ~a different fresh ingredient IDs." (reduce (lambda (a x) (+ 1 a (- (cdr x) (car x))))
+                                                                   fresh-ranges
+                                                                   :initial-value 0)))

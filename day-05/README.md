@@ -1,1 +1,1 @@
-Solution 1 went well enough. Solution 2 was a naive list based implementation at first, but ran slow and probably tripped on the GC. Switched to a hashmap implementation, and ended up smashing the heap. Sleeping on solution 2.
+Solution 1 went well enough. Solution 2 was a naive list based implementation at first, but ran slow and probably tripped on the GC. Switched to a hashmap implementation, and ended up smashing the heap. Changed to a solution of ordered insertion followed by merging overlapping ranges.

@@ -1,0 +1,1 @@
+Unhappy with this solution. It's direct, using arrays felt like the right solution, but loops could possibly be cleaner. Second solution could likely be optimized as well, after we start accumulating empty rows and columns.

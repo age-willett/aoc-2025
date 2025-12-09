@@ -1,12 +1,6 @@
 #!/usr/bin/sbcl --script
 (require :uiop)
 
-(defun freshp (id fresh-range)
-  ;;; Compare an id to the ends of the next item of fresh-range to determine whether id is fresh
-  (cond ((not fresh-range) nil) ; Not fresh
-        ((and (>= id (caar fresh-range)) (<= id (cdar fresh-range))) t) ; Is fresh
-        (t (freshp id (cdr fresh-range))))) ; Go to the next range
-
 ;; Taken from Day 2 solutions
 (defun split-line-by-character (sep line &optional collector)
   (let ((pos (position sep line :from-end t)))
@@ -21,13 +15,20 @@
                                          ,(parse-integer (cadr range-ends)))
                                        fresh-range))))))
 
+(defun init-range-iter (start end)
+  (let ((i (1- start)))
+    (lambda () (if (< i end) (incf i)))))
+
 (let* ((file-contents (uiop:read-file-lines (car (uiop:command-line-arguments))))
        (fresh-ranges (build-fresh-ranges file-contents))
-       (test-ids (map 'list
-                      #'parse-integer
-                      (subseq file-contents (1+ (position-if (lambda (n) (string= "" n)) file-contents)))))
-       (fresh-count 0))
-  (dolist (id test-ids)
-    (if (freshp id fresh-ranges) (incf fresh-count)))
+       (fresh-collection (make-hash-table)))
+  ;; dolist smashed the heap, trying a mutable loop variant.
+  (loop
+    (when (not fresh-ranges) (return))
+    (let* ((range (pop fresh-ranges))
+           (range-iter (init-range-iter (car range) (cdr range))))
+      (loop
+        (let ((i (funcall range-iter)))
+          (if (not i) (return) (setf (gethash i fresh-collection) t))))))
   ;; I should eventually bother to learn format.
-  (print (concatenate 'string "There are " (write-to-string fresh-count) " fresh ingredients in the kitchen.")))
+  (format t "There are ~a different fresh ingredient IDs." (hash-table-count fresh-collection)))

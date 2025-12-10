@@ -1,0 +1,1 @@
+Solution 1: Went on a bit of a goose chase trying to extract consecutive separators, until I realized I had to clean excess seps anyways from the string end and just used `string-trim` to great effect. The apply stack is nonsensical wizardry and I am okay with it. I still used a dolist in the end, so it's a little down to Earth.

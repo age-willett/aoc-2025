@@ -10,6 +10,7 @@
 (defun build-operator-lines (lines)
   (let* ((op-sets (split-equations lines)))
     (dolist (equation op-sets op-sets)
+      ;; TODO Replace sublisting with LAST and BUTLAST
       (rplacd equation (cons (subseq (car equation) 1) (cdr equation)))
       (rplaca equation (subseq (car equation) 0 1)))))
 

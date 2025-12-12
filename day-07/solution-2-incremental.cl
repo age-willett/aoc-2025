@@ -2,14 +2,15 @@
 (require :uiop)
 
 (defun walk-paths (grid)
-  (let ((paths-row (pop grid)))
-    (if (not (car grid)) (apply #'+ paths-row)
+  (let ((paths-row (pop grid))
+        (next-row (car grid)))
+    (if (not next-row) (apply #'+ paths-row)
         (progn (loop for i below (length paths-row)
-                     do (if (numberp (nth i (car grid))) (incf (nth i (car grid)) (nth i paths-row))
+                     do (if (numberp (nth i next-row)) (incf (nth i next-row) (nth i paths-row))
                             (progn
-                              (incf (nth (1- i) (car grid)) (nth i paths-row))
-                              (incf (nth (1+ i) (car grid)) (nth i paths-row)))))
-               (nsubstitute 0 #\^ (car grid))
+                              (incf (nth (1- i) next-row) (nth i paths-row))
+                              (incf (nth (1+ i) next-row) (nth i paths-row)))))
+               (nsubstitute 0 #\^ next-row)
                (walk-paths grid)))))
 
 (let* ((file-contents (uiop:read-file-lines (car (uiop:command-line-arguments))))

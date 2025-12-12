@@ -18,4 +18,4 @@
                              (mapcar (lambda (x) (map 'list #'identity x)) file-contents))))
   (rplaca cleaned-grid (substitute 1 #\S (car cleaned-grid)))
   (dolist (line cleaned-grid) (nsubstitute 0 #\. line))
-  (format t "There are ~a paths the tachyon particle can take.~%" (walk-paths cleaned-grid)))
+  (format t "There are ~:D paths the tachyon particle can take.~%" (walk-paths cleaned-grid)))

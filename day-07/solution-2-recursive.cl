@@ -9,6 +9,5 @@
 
 (let* ((file-contents (uiop:read-file-lines (car (uiop:command-line-arguments))))
        (rotated-grid (apply #'mapcar #'list (mapcar (lambda (x) (map 'list #'identity x)) file-contents)))
-       (start-row (position #\S rotated-grid :key #'car))
-       (paths-count (trace-path rotated-grid start-row)))
-  (format t "There are ~a paths the tachyon particle can take." paths-count))
+       (start-row (position #\S rotated-grid :key #'car)))
+  (format t "There are ~a paths the tachyon particle can take." (trace-path rotated-grid start-row)))

@@ -38,8 +38,6 @@
            (dolist (compare-junction junction-list)
              (push (list (calc-distance next-junction compare-junction) next-junction compare-junction)
                    distance-pairs)))
-
-
   (sort distance-pairs #'> :key #'car)
   (setf distance-pairs (reverse distance-pairs)) ;; nreverse had the same issue as sort <
   ;; Walk the distance list and join junctions together

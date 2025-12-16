@@ -3,3 +3,5 @@ This one broke me. I rewrote solution 1 four times because I kept getting the qu
 I ended up rewriting it a fifth time since I missed an edge case where a connection happens between two established circuits. This one worked.
 
 The way I built up the list appears to be confusing the sorting algorithms. Both `sort <` and `nreverse` were destroying elements in the list. Using `setf` with `sort >` and `reverse` got everything in the correct order for solution 2.
+
+I later realized this is because sort destructively modifies the list, but not into the resulting sorted list. D'oh.

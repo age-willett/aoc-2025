@@ -1,0 +1,1 @@
+Solution 1 is a simple rectangle calculation. I did add 1 to the rectangle calculation to represent the 'outer corner' of the rectangle. Guess it's consistent if I give it the same two points; I'll get an area of one, representing both ends of the tile.

@@ -18,6 +18,4 @@
   (loop while (setf anchor-point (pop point-list))
         do (loop for corner in point-list
                  do (setf max-area (max max-area (rect-area anchor-point corner)))))
-  (print max-area))
-
-;; 
+  (format t "The area of the largest rectangle is ~a." max-area))
